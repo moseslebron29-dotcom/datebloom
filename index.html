@@ -28,6 +28,7 @@ body {
   color: #4b2635;
 }
 
+/* Main card */
 .card {
   width: 90%;
   max-width: 430px;
@@ -53,6 +54,7 @@ body {
   }
 }
 
+/* Floating flowers */
 .flower {
   position: fixed;
   font-size: 40px;
@@ -110,6 +112,7 @@ p {
   font-size: 13px;
 }
 
+/* Buttons */
 .buttons {
   display: flex;
   justify-content: center;
@@ -138,12 +141,14 @@ button {
   color: #555;
 }
 
+/* Screens */
 #congratulations,
 #planning,
 #success {
   display: none;
 }
 
+/* Date and time */
 input {
   width: 100%;
   padding: 14px;
@@ -168,13 +173,14 @@ label {
 
 <body>
 
+<!-- Floating flowers -->
 <div class="flower f1">🌸</div>
 <div class="flower f2">🌷</div>
 <div class="flower f3">🌺</div>
 <div class="flower f4">🌹</div>
 
 
-<!-- MAIN SCREEN -->
+<!-- ================= MAIN SCREEN ================= -->
 
 <div class="card" id="main">
 
@@ -207,7 +213,7 @@ label {
 </div>
 
 
-<!-- CONGRATULATIONS -->
+<!-- ================= CONGRATULATIONS ================= -->
 
 <div class="card" id="congratulations">
 
@@ -228,7 +234,7 @@ label {
 </div>
 
 
-<!-- DATE AND TIME -->
+<!-- ================= DATE & TIME ================= -->
 
 <div class="card" id="planning">
 
@@ -265,7 +271,7 @@ label {
 </div>
 
 
-<!-- FINAL SCREEN -->
+<!-- ================= FINAL SCREEN ================= -->
 
 <div class="card" id="success">
 
@@ -286,51 +292,23 @@ label {
 </div>
 
 
-<!-- SUPABASE -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 
-/* ================= SUPABASE ================= */
-
-const SUPABASE_URL = "https://rekfdggrdqmpptqdmaae.supabase.co/rest/v1/";
-
-const SUPABASE_KEY = "sb_publishable_6bONae12BvmayKolwDv55A_UAZmD13d";
-
-const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-/* ================= SCREENS ================= */
-
-const main =
-  document.getElementById("main");
-
+/* Get screens */
+const main = document.getElementById("main");
 const congratulations =
   document.getElementById("congratulations");
-
 const planning =
   document.getElementById("planning");
-
 const success =
   document.getElementById("success");
 
 
-/* ================= BUTTONS ================= */
-
-const yes =
-  document.getElementById("yes");
-
-const no =
-  document.getElementById("no");
-
+/* Get buttons */
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
 const continueButton =
   document.getElementById("continue");
-
 const confirm =
   document.getElementById("confirm");
 
@@ -340,7 +318,6 @@ const confirm =
 yes.addEventListener("click", function() {
 
   main.style.display = "none";
-
   congratulations.style.display = "block";
 
 });
@@ -348,86 +325,70 @@ yes.addEventListener("click", function() {
 
 /* ================= NO ================= */
 
-/* NO always stays visible but moves away */
+/*
+  The NO button moves,
+  but NEVER disappears.
+*/
 
 function moveNoButton() {
 
-  const buttonWidth =
-    no.offsetWidth;
-
-  const buttonHeight =
-    no.offsetHeight;
+  const buttonWidth = no.offsetWidth;
+  const buttonHeight = no.offsetHeight;
 
   const maxX =
-    window.innerWidth -
-    buttonWidth -
-    20;
+    window.innerWidth - buttonWidth - 20;
 
   const maxY =
-    window.innerHeight -
-    buttonHeight -
-    20;
+    window.innerHeight - buttonHeight - 20;
 
   no.style.position = "fixed";
 
   no.style.left =
-    Math.max(
-      10,
-      Math.random() * maxX
-    ) + "px";
+    Math.max(10, Math.random() * maxX) + "px";
 
   no.style.top =
-    Math.max(
-      10,
-      Math.random() * maxY
-    ) + "px";
+    Math.max(10, Math.random() * maxY) + "px";
 }
 
 
-/* Computer */
-
+/* Move when mouse gets close */
 no.addEventListener(
   "mouseenter",
   moveNoButton
 );
 
 
-/* Phone */
-
+/* Move when touched on phone */
 no.addEventListener(
   "touchstart",
   function(event) {
 
     event.preventDefault();
-
     moveNoButton();
 
   }
 );
 
 
-/* Click */
-
+/* Move if clicked */
 no.addEventListener(
   "click",
   function(event) {
 
     event.preventDefault();
-
     moveNoButton();
 
   }
 );
 
 
-/* ================= PLAN DATE ================= */
+/* ================= CONTINUE ================= */
 
 continueButton.addEventListener(
   "click",
   function() {
 
     congratulations.style.display = "none";
-
     planning.style.display = "block";
 
   }
@@ -438,14 +399,13 @@ continueButton.addEventListener(
 
 confirm.addEventListener(
   "click",
-  async function() {
+  function() {
 
     const date =
       document.getElementById("date").value;
 
     const time =
       document.getElementById("time").value;
-
 
     if (!date || !time) {
 
@@ -457,42 +417,7 @@ confirm.addEventListener(
     }
 
 
-    /* Save response to Supabase */
-
-    confirm.disabled = true;
-
-    confirm.textContent =
-      "Saving... 💗";
-
-
-    const { error } =
-      await supabaseClient
-        .from("responses")
-        .insert({
-          answer: "YES",
-          selected_date: date,
-          selected_time: time
-        });
-
-
-    if (error) {
-
-      console.error(error);
-
-      alert(
-        "Sorry, your response could not be saved. Please try again."
-      );
-
-      confirm.disabled = false;
-
-      confirm.textContent =
-        "Confirm 💖";
-
-      return;
-    }
-
-
-    /* Format date */
+    /* Format date nicely */
 
     const selectedDate =
       new Date(date + "T00:00:00");
@@ -512,13 +437,10 @@ confirm.addEventListener(
     /* Show final screen */
 
     planning.style.display = "none";
-
     success.style.display = "block";
 
 
-    document.getElementById(
-      "details"
-    ).innerHTML =
+    document.getElementById("details").innerHTML =
       "📅 <b>" +
       formattedDate +
       "</b><br><br>" +
