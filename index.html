@@ -1,2 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DateBloom 🌸</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ffd6e7, #fff5fa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #4b2635;
+}
+
+.card {
+  width: 90%;
+  max-width: 430px;
+  padding: 35px 25px;
+  background: white;
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 15px 50px rgba(180, 70, 120, 0.25);
+  position: relative;
+  z-index: 10;
+  animation: appear 0.6s ease;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.flower {
+  position: fixed;
+  font-size: 40px;
+  z-index: 1;
+  animation: float 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.f1 {
+  top: 8%;
+  left: 8%;
+}
+
+.f2 {
+  top: 12%;
+  right: 8%;
+  animation-delay: 1s;
+}
+
+.f3 {
+  bottom: 10%;
+  left: 8%;
+  animation-delay: 2s;
+}
+
+.f4 {
+  bottom: 12%;
+  right: 8%;
+  animation-delay: 3s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(8deg);
+  }
+}
+
+h1 {
+  color: #e84d83;
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.small {
+  color: #999;
+  font-size: 13px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+button {
+  border: none;
+  padding: 14px 25px;
+  border-radius: 50px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#yes,
+#continue,
+#confirm {
+  background: #e84d83;
+  color: white;
+}
+
+#no {
+  background: #eeeeee;
+  color: #555;
+}
+
+#congratulations,
+#planning,
+#success {
+  display: none;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0 18px;
+  border: 2px solid #f2bfd2;
+  border-radius: 14px;
+  font-size: 16px;
+}
+
+label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.big {
+  font-size: 65px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="flower f1">🌸</div>
+<div class="flower f2">🌷</div>
+<div class="flower f3">🌺</div>
+<div class="flower f4">🌹</div>
+
+
+<!-- MAIN SCREEN -->
+
+<div class="card" id="main">
+
+  <div class="big">🌸</div>
+
+  <h1>Will you go on a date with me? 💗</h1>
+
+  <p>
+    I have a little question for you...
+    <br>
+    Would you like to spend some time together?
+  </p>
+
+  <div class="buttons">
+
+    <button id="yes">
+      YES 💕
+    </button>
+
+    <button id="no">
+      NO 😭
+    </button>
+
+  </div>
+
+  <p class="small">
+    Choose your answer 🌷
+  </p>
+
+</div>
+
+
+<!-- CONGRATULATIONS -->
+
+<div class="card" id="congratulations">
+
+  <div class="big">💐</div>
+
+  <h1>Yay! You said YES! 🎉</h1>
+
+  <p>
+    That's wonderful! 💕
+    <br>
+    Now let's choose the perfect date and time.
+  </p>
+
+  <button id="continue">
+    Plan the date 📅
+  </button>
+
+</div>
+
+
+<!-- DATE AND TIME -->
+
+<div class="card" id="planning">
+
+  <div class="big">🌷</div>
+
+  <h1>Choose the date & time</h1>
+
+  <p>
+    Pick a date and time that works for you. 💗
+  </p>
+
+  <label for="date">
+    📅 Date
+  </label>
+
+  <input
+    type="date"
+    id="date"
+  >
+
+  <label for="time">
+    🕐 Time
+  </label>
+
+  <input
+    type="time"
+    id="time"
+  >
+
+  <button id="confirm">
+    Confirm 💖
+  </button>
+
+</div>
+
+
+<!-- FINAL SCREEN -->
+
+<div class="card" id="success">
+
+  <div class="big">🎉💐</div>
+
+  <h1>It's a date! 💕</h1>
+
+  <p>
+    Your date has been planned!
+  </p>
+
+  <p id="details"></p>
+
+  <p class="small">
+    🌸 DateBloom 🌸
+  </p>
+
+</div>
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+/* ================= SUPABASE ================= */
+
 const SUPABASE_URL = "https://rekfdggrdqmpptqdmaae.supabase.co/rest/v1/";
+
 const SUPABASE_KEY = "sb_publishable_6bONae12BvmayKolwDv55A_UAZmD13d";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* ================= SCREENS ================= */
+
+const main =
+  document.getElementById("main");
+
+const congratulations =
+  document.getElementById("congratulations");
+
+const planning =
+  document.getElementById("planning");
+
+const success =
+  document.getElementById("success");
+
+
+/* ================= BUTTONS ================= */
+
+const yes =
+  document.getElementById("yes");
+
+const no =
+  document.getElementById("no");
+
+const continueButton =
+  document.getElementById("continue");
+
+const confirm =
+  document.getElementById("confirm");
+
+
+/* ================= YES ================= */
+
+yes.addEventListener("click", function() {
+
+  main.style.display = "none";
+
+  congratulations.style.display = "block";
+
+});
+
+
+/* ================= NO ================= */
+
+/* NO always stays visible but moves away */
+
+function moveNoButton() {
+
+  const buttonWidth =
+    no.offsetWidth;
+
+  const buttonHeight =
+    no.offsetHeight;
+
+  const maxX =
+    window.innerWidth -
+    buttonWidth -
+    20;
+
+  const maxY =
+    window.innerHeight -
+    buttonHeight -
+    20;
+
+  no.style.position = "fixed";
+
+  no.style.left =
+    Math.max(
+      10,
+      Math.random() * maxX
+    ) + "px";
+
+  no.style.top =
+    Math.max(
+      10,
+      Math.random() * maxY
+    ) + "px";
+}
+
+
+/* Computer */
+
+no.addEventListener(
+  "mouseenter",
+  moveNoButton
+);
+
+
+/* Phone */
+
+no.addEventListener(
+  "touchstart",
+  function(event) {
+
+    event.preventDefault();
+
+    moveNoButton();
+
+  }
+);
+
+
+/* Click */
+
+no.addEventListener(
+  "click",
+  function(event) {
+
+    event.preventDefault();
+
+    moveNoButton();
+
+  }
+);
+
+
+/* ================= PLAN DATE ================= */
+
+continueButton.addEventListener(
+  "click",
+  function() {
+
+    congratulations.style.display = "none";
+
+    planning.style.display = "block";
+
+  }
+);
+
+
+/* ================= CONFIRM ================= */
+
+confirm.addEventListener(
+  "click",
+  async function() {
+
+    const date =
+      document.getElementById("date").value;
+
+    const time =
+      document.getElementById("time").value;
+
+
+    if (!date || !time) {
+
+      alert(
+        "Please choose both a date and a time 🌸"
+      );
+
+      return;
+    }
+
+
+    /* Save response to Supabase */
+
+    confirm.disabled = true;
+
+    confirm.textContent =
+      "Saving... 💗";
+
+
+    const { error } =
+      await supabaseClient
+        .from("responses")
+        .insert({
+          answer: "YES",
+          selected_date: date,
+          selected_time: time
+        });
+
+
+    if (error) {
+
+      console.error(error);
+
+      alert(
+        "Sorry, your response could not be saved. Please try again."
+      );
+
+      confirm.disabled = false;
+
+      confirm.textContent =
+        "Confirm 💖";
+
+      return;
+    }
+
+
+    /* Format date */
+
+    const selectedDate =
+      new Date(date + "T00:00:00");
+
+    const formattedDate =
+      selectedDate.toLocaleDateString(
+        "en-US",
+        {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        }
+      );
+
+
+    /* Show final screen */
+
+    planning.style.display = "none";
+
+    success.style.display = "block";
+
+
+    document.getElementById(
+      "details"
+    ).innerHTML =
+      "📅 <b>" +
+      formattedDate +
+      "</b><br><br>" +
+      "🕐 <b>" +
+      time +
+      "</b>";
+
+  }
+);
+
+</script>
+
+</body>
+</html>
